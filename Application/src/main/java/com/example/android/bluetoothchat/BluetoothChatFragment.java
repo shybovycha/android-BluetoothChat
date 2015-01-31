@@ -20,7 +20,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,6 +47,10 @@ import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
 
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
@@ -55,6 +62,7 @@ public class BluetoothChatFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
+    private static final int REQUEST_SELECT_FILE = 4;
 
     // Layout Views
     private ListView mConversationView;
@@ -214,13 +222,30 @@ public class BluetoothChatFragment extends Fragment {
         // Check that there's actually something to send
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mChatService.write(send);
+//            byte[] send = message.getBytes();
+            mChatService.sendText(message);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
             mOutEditText.setText(mOutStringBuffer);
         }
+    }
+
+    private void sendFile(String filePath) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+            // Get the message bytes and tell the BluetoothChatService to write
+//            byte[] send = message.getBytes();
+        mChatService.sendFile(new File(filePath));
+
+        // Reset out string buffer to zero and clear the edit text field
+        mOutStringBuffer.setLength(0);
+        mOutEditText.setText(mOutStringBuffer);
     }
 
     /**
@@ -305,6 +330,7 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
+                    handleIncome(readBuf, msg.arg1);
                     mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -351,7 +377,43 @@ public class BluetoothChatFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
+                break;
+            case REQUEST_SELECT_FILE:
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    android.util.Log.d(TAG, "File Uri: " + uri.toString());
+                    // Get the path
+                    String path = getPath(getActivity(), uri);
+                    android.util.Log.d(TAG, "File Path: " + path);
+                    // Get the file instance
+                    // File file = new File(path);
+                    // Initiate the upload
+                    sendFile(path);
+                }
+                break;
         }
+    }
+
+    private static String getPath(Context context, Uri uri) {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { "_data" };
+            Cursor cursor = null;
+
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
     }
 
     /**
@@ -395,8 +457,51 @@ public class BluetoothChatFragment extends Fragment {
                 ensureDiscoverable();
                 return true;
             }
+            case R.id.send_file: {
+                // Ensure this device is discoverable by others
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                try {
+                    Intent fileChooser = Intent.createChooser(intent, "Select a File to Upload");
+                    startActivityForResult(fileChooser, REQUEST_SELECT_FILE);
+                } catch (android.content.ActivityNotFoundException ex) {
+                    // Potentially direct the user to the Market with a Dialog
+                    Log.e(TAG, "Please install a File Manager.");
+                }
+                return true;
+            }
         }
         return false;
     }
 
+    private void handleIncome(byte[] buffer, int bytes) {
+        if (bytes < 1)
+            return;
+
+        String message = new String(buffer, 0, bytes);
+
+        Pattern r = Pattern.compile("DESTINATION:(([a-zA-Z0-9\\-]+)|([*]));TYPE:(TEXT|FILE|NEIGHBOURS);(.*)");
+        Matcher m = r.matcher(message);
+
+        if (!m.find()) {
+            return;
+        }
+
+        String destination = m.group(0);
+        String messageType = m.group(3);
+        String content = m.group(4);
+
+        //if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
+            // this message is for me
+            Log.d("INCOMING", messageType);
+            Log.d("INCOMING CONTENT", content);
+        //} else {
+            // look for a path to reach - send it to everyone
+            // for (TreeMap.Entry<String, String> pair : mNeighbours.entrySet()) {
+            //   String dst = pair.getKey();
+            // }
+        //}
+    }
 }

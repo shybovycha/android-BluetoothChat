@@ -82,7 +82,7 @@ public class LogFragment extends Fragment {
         return mScrollView;
     }
 
-    @Override
+    // @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

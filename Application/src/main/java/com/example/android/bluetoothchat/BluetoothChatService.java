@@ -25,11 +25,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import android.util.Base64;
 import com.example.android.common.logger.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.UUID;
 
 /**
@@ -240,7 +239,7 @@ public class BluetoothChatService {
      * @param out The bytes to write
      * @see ConnectedThread#write(byte[])
      */
-    public void write(byte[] out) {
+    protected void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
@@ -250,6 +249,46 @@ public class BluetoothChatService {
         }
         // Perform the write unsynchronized
         r.write(out);
+    }
+
+    public void sendText(String message, String address) {
+        String res = String.format("DESTINATION:%s;TYPE:TEXT;%s", address, message);
+
+        write(res.getBytes());
+    }
+
+    public void sendText(String message) {
+        sendText(message, "*");
+    }
+
+    public void sendFile(File f) {
+        sendFile(f, "*");
+    }
+
+    public void sendFile(File f, String address) {
+        BufferedReader br = null;
+        StringBuilder sb = null;
+
+        try {
+            br = new BufferedReader(new FileReader(f));
+            sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+
+            br.close();
+
+            String content = Base64.encodeToString(sb.toString().getBytes(), Base64.DEFAULT);
+            String res = String.format("DESTINATION:%s;TYPE:FILE;%s", address, content);
+
+            write(res.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

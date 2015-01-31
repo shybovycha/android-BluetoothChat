@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/lib/android-support-v7-gridlayout.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b34129d5caff77946c386009e76072579b30b799">
+        <dex dex="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v7-gridlayout-c04ea4df7f2d2c1d024bd5b499299cf9f127f18b.jar" />
+    </item>
+    <item
+        jar="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/lib/android-support-v7-cardview.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ec4908880324a1b3fdf09c7429e60f73bac0a95a">
+        <dex dex="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v7-cardview-01ecd8f9432e16e88262495fd18e1b1af80c5aa3.jar" />
+    </item>
+    <item
+        jar="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/lib/android-support-v4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3e4e879d0b3dc11f2feb3f55e77e3b5bd82c4a28">
+        <dex dex="/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v4-679ccf3d7137f8852e2b23b91e6f9001436de54f.jar" />
+    </item>
+
+</items>

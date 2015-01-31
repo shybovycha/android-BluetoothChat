@@ -1,0 +1,4 @@
+/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/classes/debug
+/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v7-cardview-01ecd8f9432e16e88262495fd18e1b1af80c5aa3.jar
+/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v7-gridlayout-c04ea4df7f2d2c1d024bd5b499299cf9f127f18b.jar
+/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/build/intermediates/pre-dexed/debug/android-support-v4-679ccf3d7137f8852e2b23b91e6f9001436de54f.jar
