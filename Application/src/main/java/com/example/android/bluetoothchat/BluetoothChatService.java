@@ -29,6 +29,8 @@ import android.util.Base64;
 import com.example.android.common.logger.Log;
 
 import java.io.*;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -60,6 +62,8 @@ public class BluetoothChatService {
     private ConnectedThread mConnectedThread;
     private int mState;
 
+    private Map<String, ConnectedThread> mConnectedThreadPool;
+
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
@@ -76,6 +80,7 @@ public class BluetoothChatService {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
+        mConnectedThreadPool = new TreeMap<String, ConnectedThread>();
     }
 
     /**
@@ -249,6 +254,23 @@ public class BluetoothChatService {
         }
         // Perform the write unsynchronized
         r.write(out);
+    }
+
+    protected void write(String address, byte[] out) {
+        // Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+
+            r = mConnectedThreadPool.get(address);
+        }
+        // Perform the write unsynchronized
+        r.write(out);
+    }
+
+    public void sendRaw(String message, String address) {
+        write(message.getBytes());
     }
 
     public void sendText(String message, String address) {

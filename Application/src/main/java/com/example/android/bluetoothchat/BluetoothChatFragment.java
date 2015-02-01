@@ -20,6 +20,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -48,6 +49,7 @@ import android.widget.Toast;
 import com.example.android.common.logger.Log;
 
 import java.io.File;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,12 +96,18 @@ public class BluetoothChatFragment extends Fragment {
      */
     private BluetoothChatService mChatService = null;
 
+    private Map<String, List<String>> mGraph;
+    private List<BluetoothSocket> mNeighbours;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        mNeighbours = new ArrayList<BluetoothSocket>();
+        mGraph = new TreeMap<String, List<String>>();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -207,11 +215,24 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
-     */
+    private void forwardMessage(String destination, String message) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            mChatService.sendText(message);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -222,7 +243,6 @@ public class BluetoothChatFragment extends Fragment {
         // Check that there's actually something to send
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
-//            byte[] send = message.getBytes();
             mChatService.sendText(message);
 
             // Reset out string buffer to zero and clear the edit text field
@@ -479,36 +499,16 @@ public class BluetoothChatFragment extends Fragment {
         if (message.length() < 1)
             return;
 
-//        String message = new String(buffer, 0, bytes);
+        Map<String, String> parts = ChatProtocol.parseMessage(message);
 
-        Pattern r = Pattern.compile("DESTINATION:(([a-zA-Z0-9\\-]+)|([*]));TYPE:(TEXT|FILE|NEIGHBOURS);(.*)");
-        Matcher m = r.matcher(message);
+        List<String> route = ChatProtocol.parseRoute(parts.get("route"));
+        String destination = route.get(route.size() - 1);
 
-        if (!m.find()) {
-            return;
-        }
-
-        String destination = m.group(1);
-        String messageType = m.group(4);
-        String content = m.group(5);
-
-        //if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
-        // this message is for me
-
-        Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", parts.get("messageType"), destination, parts.get("content")), Toast.LENGTH_LONG).show();
 
         if (messageType.compareTo("TEXT") == 0) {
             mConversationArrayAdapter.add("Me:  " + content);
         }
-
-        //Log.d("INCOMING", messageType);
-        //Log.d("INCOMING CONTENT", content);
-        //} else {
-        // look for a path to reach - send it to everyone
-        // for (TreeMap.Entry<String, String> pair : mNeighbours.entrySet()) {
-        //   String dst = pair.getKey();
-        // }
-        //}
     }
 
     private void handleIncome(byte[] buffer, int bytes) {
@@ -517,33 +517,39 @@ public class BluetoothChatFragment extends Fragment {
 
         String message = new String(buffer, 0, bytes);
 
-        Pattern r = Pattern.compile("DESTINATION:(([a-zA-Z0-9\\-]+)|([*]));TYPE:(TEXT|FILE|NEIGHBOURS);(.*)");
-        Matcher m = r.matcher(message);
+        Map<String, String> parts = ChatProtocol.parseMessage(message);
+        List<String> route = ChatProtocol.parseRoute(parts.get("route"));
 
-        if (!m.find()) {
-            return;
-        }
+        String destination = route.get(route.size() - 1);
+        String messageType = parts.get("messageType");
+        String content = parts.get("content");
 
-        String destination = m.group(1);
-        String messageType = m.group(4);
-        String content = m.group(5);
-
-        //if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
-            // this message is for me
+        String myAddress = mBluetoothAdapter.getAddress();
 
         Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
 
-        if (messageType.compareTo("TEXT") == 0) {
-            mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + content);
-        }
+        if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
+            // this message is for me
+            if (messageType.compareTo("TEXT") == 0) {
+                mConversationArrayAdapter.add(String.format("%s: %s", parts.get("senderName"), content));
+            } else if (messageType.compareTo("GRAPH") == 0) {
+                Map<String, String> graph = ChatProtocol.parseGraph(content);
+            }
+        } else {
+            for (int i = 0; i < route.size(); i++) {
+                if (route.get(i).compareTo(myAddress) == 0) {
+                    if (i == route.size() - 1) {
+                        return;
+                    }
 
-            //Log.d("INCOMING", messageType);
-            //Log.d("INCOMING CONTENT", content);
-        //} else {
-            // look for a path to reach - send it to everyone
-            // for (TreeMap.Entry<String, String> pair : mNeighbours.entrySet()) {
-            //   String dst = pair.getKey();
-            // }
-        //}
+                    String target = route.get(i + 1);
+                    forwardMessage(target, message);
+                }
+            }
+        }
+    }
+
+    private void forwardMessage(String destination, String message) {
+
     }
 }
