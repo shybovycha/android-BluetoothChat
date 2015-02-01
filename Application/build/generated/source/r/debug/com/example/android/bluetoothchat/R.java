@@ -32,13 +32,12 @@ public final class R {
         public static final int edit_text_out=0x7f08000a;
         public static final int in=0x7f080009;
         public static final int insecure_connect_scan=0x7f08000e;
-        public static final int log_fragment=0x7f080007;
-        public static final int menu_toggle_log=0x7f080010;
+        public static final int log_fragment=0x7f080008;
         public static final int new_devices=0x7f080003;
         public static final int paired_devices=0x7f080001;
-        public static final int sample_content_fragment=0x7f080008;
+        public static final int sample_content_fragment=0x7f080006;
         public static final int sample_main_layout=0x7f080005;
-        public static final int sample_output=0x7f080006;
+        public static final int sample_output=0x7f080007;
         public static final int secure_connect_scan=0x7f08000d;
         public static final int send_file=0x7f08000c;
         public static final int title_new_devices=0x7f080002;
