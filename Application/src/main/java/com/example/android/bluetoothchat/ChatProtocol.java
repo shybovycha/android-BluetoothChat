@@ -1,5 +1,7 @@
 package com.example.android.bluetoothchat;
 
+import android.bluetooth.BluetoothAdapter;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,5 +68,15 @@ public class ChatProtocol {
         }
 
         return result;
+    }
+
+    public static String createMessage(String messageType, String content, String route, String fromAddress, String fromName) {
+        return String.format("ROUTE:%s;TYPE:%s;FROM_ADDR:%s;FROM_NAME:%s;%s", route, messageType, fromAddress, fromName, content);
+    }
+
+    public static String createGraphMessage(Map<String, List<String>> graph, String address, String fromAddress, String fromName) {
+        String route = String.format("%s,%s;", fromAddress, address);
+
+        return createMessage("GRAPH", graphToString(graph), route, fromAddress, fromName);
     }
 }

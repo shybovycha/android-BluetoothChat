@@ -29,10 +29,7 @@ import android.util.Base64;
 import com.example.android.common.logger.Log;
 
 import java.io.*;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -65,6 +62,9 @@ public class BluetoothChatService {
 
     private Map<String, ConnectedThread> mConnectedThreadPool;
 
+    private Map<String, List<String>> mGraph;
+    private List<BluetoothSocket> mNeighbours;
+
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
@@ -82,6 +82,8 @@ public class BluetoothChatService {
         mState = STATE_NONE;
         mHandler = handler;
         mConnectedThreadPool = new TreeMap<String, ConnectedThread>();
+        mNeighbours = new ArrayList<BluetoothSocket>();
+        mGraph = new TreeMap<String, List<String>>();
     }
 
     /**
@@ -274,6 +276,12 @@ public class BluetoothChatService {
         write(message.getBytes());
     }
 
+    public void sendGraph(String address, Map<String, List<String>> graph) {
+        String res = ChatProtocol.createGraphMessage(graph, address, mAdapter.getAddress(), mAdapter.getName());
+
+        write(res.getBytes());
+    }
+
     public void sendText(String message, String address) {
         String res = String.format("DESTINATION:%s;TYPE:TEXT;%s", address, message);
 
@@ -342,10 +350,6 @@ public class BluetoothChatService {
 
         // Start the service over to restart listening mode
         BluetoothChatService.this.start();
-    }
-
-    public void sendGraph(String address, Map<String, List<String>> graph) {
-
     }
 
     /**
@@ -493,6 +497,8 @@ public class BluetoothChatService {
                 mConnectThread = null;
             }
 
+            sendGraph(mmSocket.getRemoteDevice().getAddress(), mGraph);
+
             // Start the connected thread
             connected(mmSocket, mmDevice, mSocketType);
         }
@@ -531,6 +537,18 @@ public class BluetoothChatService {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+
+            sendGraph(socket.getRemoteDevice().getAddress(), mGraph);
+
+            mNeighbours.add(socket);
+
+            String myAddress = mAdapter.getAddress();
+
+            if (!mGraph.containsKey(myAddress)) {
+                mGraph.put(myAddress, new ArrayList<String>());
+            }
+
+            mGraph.get(myAddress).add(socket.getRemoteDevice().getAddress());
         }
 
         public void run() {
@@ -543,6 +561,8 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+
+                    handleIncome(buffer, bytes);
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
@@ -579,6 +599,56 @@ public class BluetoothChatService {
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);
+            }
+        }
+
+        protected void handleIncome(byte[] buffer, int bytes) {
+            String message = new String(buffer, 0, bytes);
+
+            Map<String, String> parts = ChatProtocol.parseMessage(message);
+            List<String> route = ChatProtocol.parseRoute(parts.get("route"));
+
+            String destination = route.get(route.size() - 1);
+            String messageType = parts.get("messageType");
+            String content = parts.get("content");
+
+            String myAddress = mAdapter.getAddress();
+
+            if (destination.compareTo("*") == 0) {
+                if (messageType.compareTo("GRAPH") == 0) {
+                    Map<String, List<String>> graph = ChatProtocol.parseGraph(content);
+
+                    if (!ChatRouter.compareGraphs(graph, mGraph)) {
+                        graph = ChatRouter.mergeGraphs(mGraph, graph);
+                    }
+
+                    for (BluetoothSocket socket : mNeighbours) {
+                        sendGraph(socket.getRemoteDevice().getAddress(), graph);
+                    }
+                } else if (messageType.compareTo("TEXT") == 0) {
+                    String fromAddress = parts.get("fromAddress");
+
+                    for (BluetoothSocket socket : mNeighbours) {
+                        String address = socket.getRemoteDevice().getAddress();
+
+                        if (address.compareTo(fromAddress) == 0) {
+                            continue;
+                        }
+
+                        sendRaw(message, address);
+                    }
+                }
+            } else {
+                for (int i = 0; i < route.size(); i++) {
+                    if (route.get(i).compareTo(myAddress) == 0) {
+                        if (i == route.size() - 1) {
+                            return;
+                        }
+
+                        String target = route.get(i + 1);
+                        sendRaw(message, target);
+                    }
+                }
             }
         }
     }

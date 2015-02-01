@@ -96,18 +96,12 @@ public class BluetoothChatFragment extends Fragment {
      */
     private BluetoothChatService mChatService = null;
 
-    private Map<String, List<String>> mGraph;
-    private List<BluetoothSocket> mNeighbours;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        mNeighbours = new ArrayList<BluetoothSocket>();
-        mGraph = new TreeMap<String, List<String>>();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -486,6 +480,9 @@ public class BluetoothChatFragment extends Fragment {
         List<String> route = ChatProtocol.parseRoute(parts.get("route"));
         String destination = route.get(route.size() - 1);
 
+        String messageType = parts.get("messageType");
+        String content = parts.get("content");
+
         Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", parts.get("messageType"), destination, parts.get("content")), Toast.LENGTH_LONG).show();
 
         if (messageType.compareTo("TEXT") == 0) {
@@ -510,46 +507,10 @@ public class BluetoothChatFragment extends Fragment {
 
         Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
 
-        if (destination.compareTo(myAddress) == 0) {
+        if ((destination.compareTo(myAddress) == 0) || (destination.compareTo("*") == 0)) {
             // this message is for me
             if (messageType.compareTo("TEXT") == 0) {
                 mConversationArrayAdapter.add(String.format("%s: %s", parts.get("senderName"), content));
-            }
-            // handle files
-        } else if (destination.compareTo("*") == 0) {
-            if (messageType.compareTo("GRAPH") == 0) {
-                Map<String, List<String>> graph = ChatProtocol.parseGraph(content);
-
-                if (!ChatRouter.compareGraphs(graph, mGraph)) {
-                    graph = ChatRouter.mergeGraphs(mGraph, graph);
-                }
-
-                for (BluetoothSocket socket : mNeighbours) {
-                    mChatService.sendGraph(socket.getRemoteDevice().getAddress(), graph);
-                }
-            } else if (messageType.compareTo("TEXT") == 0) {
-                String fromAddress = parts.get("fromAddress");
-
-                for (BluetoothSocket socket : mNeighbours) {
-                    String address = socket.getRemoteDevice().getAddress();
-
-                    if (address.compareTo(fromAddress) == 0) {
-                        continue;
-                    }
-
-                    mChatService.sendRaw(message, address);
-                }
-            }
-        } else {
-            for (int i = 0; i < route.size(); i++) {
-                if (route.get(i).compareTo(myAddress) == 0) {
-                    if (i == route.size() - 1) {
-                        return;
-                    }
-
-                    String target = route.get(i + 1);
-                    mChatService.sendRaw(message, target);
-                }
             }
         }
     }
