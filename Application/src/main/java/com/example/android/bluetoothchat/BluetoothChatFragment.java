@@ -324,14 +324,13 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    handleOutcome(writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     handleIncome(readBuf, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -476,6 +475,42 @@ public class BluetoothChatFragment extends Fragment {
         return false;
     }
 
+    private void handleOutcome(String message) {
+        if (message.length() < 1)
+            return;
+
+//        String message = new String(buffer, 0, bytes);
+
+        Pattern r = Pattern.compile("DESTINATION:(([a-zA-Z0-9\\-]+)|([*]));TYPE:(TEXT|FILE|NEIGHBOURS);(.*)");
+        Matcher m = r.matcher(message);
+
+        if (!m.find()) {
+            return;
+        }
+
+        String destination = m.group(1);
+        String messageType = m.group(4);
+        String content = m.group(5);
+
+        //if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
+        // this message is for me
+
+        Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
+
+        if (messageType.compareTo("TEXT") == 0) {
+            mConversationArrayAdapter.add("Me:  " + content);
+        }
+
+        //Log.d("INCOMING", messageType);
+        //Log.d("INCOMING CONTENT", content);
+        //} else {
+        // look for a path to reach - send it to everyone
+        // for (TreeMap.Entry<String, String> pair : mNeighbours.entrySet()) {
+        //   String dst = pair.getKey();
+        // }
+        //}
+    }
+
     private void handleIncome(byte[] buffer, int bytes) {
         if (bytes < 1)
             return;
@@ -489,14 +524,21 @@ public class BluetoothChatFragment extends Fragment {
             return;
         }
 
-        String destination = m.group(0);
-        String messageType = m.group(3);
-        String content = m.group(4);
+        String destination = m.group(1);
+        String messageType = m.group(4);
+        String content = m.group(5);
 
         //if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
             // this message is for me
-            Log.d("INCOMING", messageType);
-            Log.d("INCOMING CONTENT", content);
+
+        Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
+
+        if (messageType.compareTo("TEXT") == 0) {
+            mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + content);
+        }
+
+            //Log.d("INCOMING", messageType);
+            //Log.d("INCOMING CONTENT", content);
         //} else {
             // look for a path to reach - send it to everyone
             // for (TreeMap.Entry<String, String> pair : mNeighbours.entrySet()) {
