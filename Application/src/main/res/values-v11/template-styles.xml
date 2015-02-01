@@ -14,6 +14,9 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-</menu>
-<!-- From: file:/home/shybovycha/projects/uniwersytet/android/android-BluetoothChat/Application/src/main/res/menu/main.xml -->
+<resources>
+
+    <!-- Activity themes -->
+    <style name="Theme.Base" parent="android:Theme.Holo.Light" />
+
+</resources>

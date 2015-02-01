@@ -1,0 +1,5 @@
+.gradle
+.idea
+**/out
+**/gen
+Application/build
