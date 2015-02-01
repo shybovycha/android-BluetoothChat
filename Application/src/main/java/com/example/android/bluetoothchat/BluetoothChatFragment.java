@@ -215,24 +215,6 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    private void forwardMessage(String destination, String message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            mChatService.sendText(message);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
-        }
-    }
-
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -528,12 +510,35 @@ public class BluetoothChatFragment extends Fragment {
 
         Toast.makeText(getActivity(), String.format("T<%s> to <%s>: %s", messageType, destination, content), Toast.LENGTH_LONG).show();
 
-        if (destination.compareTo(myAddress) == 0 || destination.compareTo("*") == 0) {
+        if (destination.compareTo(myAddress) == 0) {
             // this message is for me
             if (messageType.compareTo("TEXT") == 0) {
                 mConversationArrayAdapter.add(String.format("%s: %s", parts.get("senderName"), content));
-            } else if (messageType.compareTo("GRAPH") == 0) {
-                Map<String, String> graph = ChatProtocol.parseGraph(content);
+            }
+            // handle files
+        } else if (destination.compareTo("*") == 0) {
+            if (messageType.compareTo("GRAPH") == 0) {
+                Map<String, List<String>> graph = ChatProtocol.parseGraph(content);
+
+                if (!ChatRouter.compareGraphs(graph, mGraph)) {
+                    graph = ChatRouter.mergeGraphs(mGraph, graph);
+                }
+
+                for (BluetoothSocket socket : mNeighbours) {
+                    mChatService.sendGraph(socket.getRemoteDevice().getAddress(), graph);
+                }
+            } else if (messageType.compareTo("TEXT") == 0) {
+                String fromAddress = parts.get("fromAddress");
+
+                for (BluetoothSocket socket : mNeighbours) {
+                    String address = socket.getRemoteDevice().getAddress();
+
+                    if (address.compareTo(fromAddress) == 0) {
+                        continue;
+                    }
+
+                    mChatService.sendRaw(message, address);
+                }
             }
         } else {
             for (int i = 0; i < route.size(); i++) {
@@ -543,13 +548,9 @@ public class BluetoothChatFragment extends Fragment {
                     }
 
                     String target = route.get(i + 1);
-                    forwardMessage(target, message);
+                    mChatService.sendRaw(message, target);
                 }
             }
         }
-    }
-
-    private void forwardMessage(String destination, String message) {
-
     }
 }

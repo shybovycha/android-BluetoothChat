@@ -7,10 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a42dcd27-eabc-461d-8355-95aa26167bc8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java" afterPath="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="android-BluetoothChat.iws" />
@@ -76,14 +76,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BluetoothChatFragment.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BluetoothChatFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="7698" max-vertical-offset="8280">
-              <caret line="109" column="12" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.4072165" vertical-offset="7743" max-vertical-offset="8325">
+              <caret line="539" column="54" selection-start-line="539" selection-start-column="54" selection-end-line="539" selection-end-column="54" />
               <folding>
-                <element signature="e#0#21025#0" expanded="true" />
+                <element signature="e#0#21043#0" expanded="true" />
                 <element signature="imports" expanded="true" />
+                <element signature="e#16271#16272#0" expanded="true" />
+                <element signature="e#16332#16333#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -92,13 +94,13 @@
       <file leaf-file-name="BluetoothChatService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5925" max-vertical-offset="8295">
-              <caret line="276" column="21" selection-start-line="276" selection-start-column="21" selection-end-line="276" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="4482" max-vertical-offset="8355">
+              <caret line="347" column="0" selection-start-line="347" selection-start-column="0" selection-end-line="347" selection-end-column="0" />
               <folding>
-                <element signature="e#9137#9138#0" expanded="true" />
-                <element signature="e#9178#9179#0" expanded="true" />
-                <element signature="e#9405#9406#0" expanded="true" />
-                <element signature="e#9443#9444#0" expanded="true" />
+                <element signature="e#9160#9161#0" expanded="true" />
+                <element signature="e#9201#9202#0" expanded="true" />
+                <element signature="e#9428#9429#0" expanded="true" />
+                <element signature="e#9466#9467#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -107,8 +109,8 @@
       <file leaf-file-name="ChatProtocol.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="258" max-vertical-offset="930">
-              <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="558" max-vertical-offset="1140">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#320#336#0" expanded="true" />
@@ -119,13 +121,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChatRouter.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ChatRouter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.88235295" vertical-offset="450" max-vertical-offset="1110">
-              <caret line="65" column="7" selection-start-line="65" selection-start-column="7" selection-end-line="65" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="770" max-vertical-offset="1455">
+              <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
               <folding>
-                <element signature="e#505#513#0" expanded="true" />
+                <element signature="e#531#539#0" expanded="true" />
+                <element signature="e#1471#1493#0" expanded="true" />
+                <element signature="e#1622#1630#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1004,11 +1008,11 @@
         <option value="$PROJECT_DIR$/Application/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/Application/src/main/res/menu/main.xml" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/MainActivity.java" />
-        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRoute.java" />
-        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java" />
+        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java" />
+        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java" />
       </list>
     </option>
   </component>
@@ -1597,12 +1601,12 @@
       <workItem from="1422704265661" duration="2995000" />
       <workItem from="1422714295783" duration="3479000" />
       <workItem from="1422739424057" duration="4152000" />
-      <workItem from="1422808087464" duration="13444000" />
+      <workItem from="1422808087464" duration="18679000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24281000" />
+    <option name="totallyTimeSpent" value="29516000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-2" y="-3" width="1370" height="740" extended-state="6" />
@@ -1691,8 +1695,10 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7065">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#21025#0" expanded="true" />
+            <element signature="e#0#21043#0" expanded="true" />
             <element signature="imports" expanded="true" />
+            <element signature="e#16271#16272#0" expanded="true" />
+            <element signature="e#16332#16333#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1702,10 +1708,10 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="3420" max-vertical-offset="8025">
           <caret line="391" column="17" selection-start-line="391" selection-start-column="17" selection-end-line="391" selection-end-column="17" />
           <folding>
-            <element signature="e#9137#9138#0" expanded="true" />
-            <element signature="e#9178#9179#0" expanded="true" />
-            <element signature="e#9405#9406#0" expanded="true" />
-            <element signature="e#9443#9444#0" expanded="true" />
+            <element signature="e#9160#9161#0" expanded="true" />
+            <element signature="e#9201#9202#0" expanded="true" />
+            <element signature="e#9428#9429#0" expanded="true" />
+            <element signature="e#9466#9467#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1760,10 +1766,10 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="7425">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#9137#9138#0" expanded="true" />
-            <element signature="e#9178#9179#0" expanded="true" />
-            <element signature="e#9405#9406#0" expanded="true" />
-            <element signature="e#9443#9444#0" expanded="true" />
+            <element signature="e#9160#9161#0" expanded="true" />
+            <element signature="e#9201#9202#0" expanded="true" />
+            <element signature="e#9428#9429#0" expanded="true" />
+            <element signature="e#9466#9467#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1950,34 +1956,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7698" max-vertical-offset="8280">
-          <caret line="109" column="12" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#21025#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3315" max-vertical-offset="8295">
-          <caret line="276" column="21" selection-start-line="276" selection-start-column="21" selection-end-line="276" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="4482" max-vertical-offset="8355">
+          <caret line="347" column="0" selection-start-line="347" selection-start-column="0" selection-end-line="347" selection-end-column="0" />
           <folding>
-            <element signature="e#9137#9138#0" expanded="true" />
-            <element signature="e#9178#9179#0" expanded="true" />
-            <element signature="e#9405#9406#0" expanded="true" />
-            <element signature="e#9443#9444#0" expanded="true" />
+            <element signature="e#9160#9161#0" expanded="true" />
+            <element signature="e#9201#9202#0" expanded="true" />
+            <element signature="e#9428#9429#0" expanded="true" />
+            <element signature="e#9466#9467#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatProtocol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="258" max-vertical-offset="930">
-          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="558" max-vertical-offset="1140">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#320#336#0" expanded="true" />
@@ -1989,10 +1984,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/ChatRouter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.88235295" vertical-offset="450" max-vertical-offset="1110">
-          <caret line="65" column="7" selection-start-line="65" selection-start-column="7" selection-end-line="65" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="770" max-vertical-offset="1455">
+          <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
           <folding>
-            <element signature="e#505#513#0" expanded="true" />
+            <element signature="e#531#539#0" expanded="true" />
+            <element signature="e#1471#1493#0" expanded="true" />
+            <element signature="e#1622#1630#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/bluetoothchat/BluetoothChatFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4072165" vertical-offset="7743" max-vertical-offset="8325">
+          <caret line="539" column="54" selection-start-line="539" selection-start-column="54" selection-end-line="539" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#21043#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#16271#16272#0" expanded="true" />
+            <element signature="e#16332#16333#0" expanded="true" />
           </folding>
         </state>
       </provider>

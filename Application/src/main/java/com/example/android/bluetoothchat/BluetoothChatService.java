@@ -29,6 +29,7 @@ import android.util.Base64;
 import com.example.android.common.logger.Log;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -341,6 +342,10 @@ public class BluetoothChatService {
 
         // Start the service over to restart listening mode
         BluetoothChatService.this.start();
+    }
+
+    public void sendGraph(String address, Map<String, List<String>> graph) {
+
     }
 
     /**

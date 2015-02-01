@@ -53,4 +53,18 @@ public class ChatProtocol {
 
         return result;
     }
+
+    public static String graphToString(Map<String, List<String>> graph) {
+        String result = "";
+
+        for (Map.Entry<String, List<String>> e : graph.entrySet()) {
+            List<String> neighbours = e.getValue();
+
+            for (String v : neighbours) {
+                result += String.format("%s,%s;", e.getKey(), v);
+            }
+        }
+
+        return result;
+    }
 }
